@@ -47,3 +47,9 @@ Developed through statistics coursework at the University of Toronto. Original a
 University of Toronto Scarborough · Specialist (Co-operative), Management and Finance · Minors in Applied Statistics and Economics for Management · Dean’s List, 2024–2026.
 
 Python project pages distinguish student implementation excerpts from course-provided frameworks. The personal finance ledger includes AI-assisted components, documented in its original source comments.
+
+## Financial Data Analysis
+
+- [NYSE Composite Market Trends & Data Quality](project__nyse-composite-market-trends-data-quality.html) — Python Time-Series EDA, Data Cleaning & Correlation Analysis
+
+Historical NYSE Composite market-data analysis completed and run by Qianhui Xu.
