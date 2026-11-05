@@ -174,7 +174,7 @@
     "source": "sources__STAD29_onion-density-wheat-field-variation.Rmd",
     "format": "HTML",
     "slug": "onion-density-wheat-field-variation",
-    "image": "assets__STAD29-6.png"
+    "image": "visual__planting-density-onion-yield.png"
   },
   {
     "course": "STAD29",
@@ -186,19 +186,19 @@
     "source": "sources__STAD29_self-esteem-over-time-rainforest-leaves.Rmd",
     "format": "HTML",
     "slug": "self-esteem-over-time-rainforest-leaves",
-    "image": "assets__STAD29-7.png"
+    "image": "visual__rainforest-leaves-in-discriminant-space.png"
   },
   {
     "course": "STAD29",
     "number": 8,
     "title": "Patterns Among Exoplanets & Species",
-    "methods": "K-Means Clustering & Cluster Stability",
+    "methods": "K-Means Clustering, Hierarchical Methods & Cluster Stability",
     "description": "Group exoplanets by standardized physical features, explore alternative cluster counts with a custom function, and compare cluster membership. A second analysis examines genetic distances among vertebrate species.",
     "path": "reports__STAD29_patterns-among-exoplanets-species.html",
     "source": "sources__STAD29_patterns-among-exoplanets-species.Rmd",
     "format": "HTML",
     "slug": "patterns-among-exoplanets-species",
-    "image": "assets__STAD29-8.png"
+    "image": "visual__species-similarity-cluster-partitions.png"
   },
   {
     "course": "CSCA08",
@@ -247,5 +247,18 @@
     "format": "HTML",
     "slug": "personal-finance-ledger",
     "language": "Python"
+  },
+  {
+    "course": "FINCASE",
+    "number": 1,
+    "title": "NYSE Composite Market Trends & Data Quality",
+    "methods": "Python Time-Series EDA, Data Cleaning & Correlation Analysis",
+    "description": "Explore historical NYSE Composite (NYA) market data through missing-value diagnostics, date preparation, price distributions, time-series views and correlations between price measures.",
+    "path": "project__nyse-composite-market-trends-data-quality.html",
+    "source": null,
+    "format": "HTML",
+    "slug": "nyse-composite-market-trends-data-quality",
+    "language": "Python",
+    "image": "finance__price-distributions-time-structure.webp"
   }
 ]
