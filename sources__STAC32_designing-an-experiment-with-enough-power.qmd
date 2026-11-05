@@ -1,0 +1,101 @@
+---
+title: "STAC32 Assignment 4"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+## Power of test
+
+```{r}
+library(tidyverse)
+```
+
+**Question 1:**
+
+```{r}
+set.seed(1)
+tibble(sim=1:1000) %>% 
+  rowwise() %>% 
+  mutate(my_sample=list(rnorm(25,110,15))) %>% 
+  mutate(t_test=list(t.test(my_sample,mu=100,alternative="greater"))) %>% 
+  mutate(p_value=t_test$p.value) %>% 
+  count(p_value<=0.05)
+```
+
+Explanation: FALSE: There were 51 simulations with p-values larger than 0.05, so null hypothesis not rejected, but the hypothesis was false. which is Type II error. TRUE: 949 simulations with a p-value of less than or equal to 0.05 so null hypothesis rejected, indicating that the hypothesis is false, hence we correctly rejected the false hypothesis. We successfully rejected 949 out of 1000, hence the estimated power is 0.949.
+
+**Question 2:**
+
+```{r}
+power.t.test(n=25, delta=110-100, sd=15,type="one.sample",alternative="one.sided")
+```
+
+Explanation: The power we get from power calculation method is 0.9443429 which is a little bit difference than simulation method 0.949. But if we run the simulation test for like 1000000 times and more, than the answer will be very closed and reach identical.
+
+**Question 3:**
+
+```{r}
+set.seed(1)
+tibble(sim=1:1000) %>% 
+  rowwise() %>% 
+  mutate(my_sample=list(rnorm(16,110,15))) %>% 
+  mutate(t_test=list(t.test(my_sample,mu=100,alternative="greater"))) %>% 
+  mutate(p_value=t_test$p.value) %>% 
+  count(p_value<=0.05)
+```
+
+In question one we have 25 samples, and we get result is 0.949, Now we want to power change to 0.803, so we should decrease the sample size. Since the sample size decreasing, the power will decrease.
+
+**Question 4:**
+
+```{r}
+power.t.test(power=0.8,delta=110-100,sd=15,type="one.sample",alternative="one.sided")
+```
+
+The sample size should be rounded up to 16.
+
+Explanation: 1. The result from the power calculation is the same as the simulated result. Both are consistent with one another. 2. In the power calculation, the sample size result is not an integer, so it must be rounded up to the nearest whole number (16). 3. In the simulation, they selected an appropriate sample size based on the conditions. 4. The hypothesis test is based on the same data background (same parameters), it is only because a different method was used for calculation.
+
+**Question 5:**
+
+power calculation method:
+
+```{r}
+ns<-seq(5,40,5)
+ans<-power.t.test(n=ns,delta=110-100,sd=15,type="one.sample",alternative="one.sided")
+ans
+```
+
+```{r}
+a<-tibble(n=ns,power=ans$power)
+ggplot(a,aes(x=n,y=power))+geom_point()+geom_line()+geom_hline(yintercept=1,linetype="dashed")
+```
+
+**Question 6:**
+
+approximately 21
+
+## **A comparative experiment**
+
+**Question 7:**
+
+```{r}
+power.t.test(n=30,delta=45-40,sd=10,type="two.sample",alternative="one.sided")
+```
+
+Explanation: Use power.t.test to calculate the power of your test, under the assumption that both treatment and control populations have a normal distribution of **0.606,** or **60.6%**. This means there is a 60.6% chance of correctly rejecting the null hypothesis when it is false. ​
+
+**Question 8:**
+
+Assumption: two group's standard deviation should be same, and sample size for each group should be same. So if SD is not same and sample size is not same would *prevent* you from using `power.t.test` to obtain the power in an experiment like this one.
+
+**Question 9:**
+
+```{r}
+power.t.test(power=0.75,delta=5,sd=10,type="two.sample",alternative="one.sided")
+```
+
+Sample sizes are rounded up to 44, which can allow a power of 0.75 under the assumptions given in the question.

@@ -1,0 +1,208 @@
+---
+title: "STAD29_A6"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+**Q1**
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/fact-opinion.csv"
+fact<-read_csv(my_url)
+```
+
+```{r}
+fact
+```
+
+**Q2**
+
+```{r}
+fact%>%
+  mutate(age=factor(age))->fact
+fact
+```
+
+Q3
+
+```{r}
+fact%>%count(age)
+```
+
+```{r}
+C_1<-c(1,-1,0,0,0)
+C_2<-c(0,0,0,1,-1)
+C_3<-c(1/2,1/2,-1,0,0)
+C_4<-c(1/3,1/3,1/3,-1/2,-1/2)
+```
+
+**Q4**
+
+```{r}
+sum(C_1*C_2)
+```
+
+```{r}
+sum(C_1*C_4)
+```
+
+**Q5**
+
+```{r}
+S<-cbind(C_1,C_2,C_3,C_4)
+contrasts(fact$age)<-S
+```
+
+```{r}
+fact.1<-lm(correct~age,data=fact)
+summary(fact.1)
+```
+
+**Q6:**
+
+**· ageC_1 (18–27 vs. 28–38):** p = 0.933 \>0.5 → **not significant**
+
+· **ageC_2 (50–65 vs. 65+):** p = 0.742 \>0.5 → **not significant**
+
+· **ageC_3 ((18–27 & 28–38) average vs. 39–49):** p = 0.725 \>0.5→ **not significant**
+
+**· ageC_4 (three youngest vs. two oldest):** p \< 2e-16 \<0.5→ **significant**
+
+The results show no statistically significant differences between adjacent age groups (18–27 vs. 28–38, 50–65 vs. 65+, and the average of the two youngest groups vs. 39–49).
+
+However, there is a significant difference when comparing the three youngest groups with the two oldest groups. On average, respondents aged 50 and above correctly classified more statements than those aged 18–49. T
+
+his suggests that older Americans are generally better at distinguishing facts from opinions, although differences between nearby age groups are not significant.
+
+## **Spanish onions**
+
+**Q7:**
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/onions.csv"
+onions<-read_csv(my_url)
+```
+
+```{r}
+onions
+```
+
+Q8:
+
+```{r}
+ggplot(onions,aes(x=dens,y=yield,colour=location))+geom_point()+geom_smooth()
+```
+
+1.  The LOESS curves for both locations are clearly curved rather than straight, indicating a non-linear relationship between planting density and yield.
+
+2.   The points closely follow the smooth curves and the confidence intervals are relatively narrow, suggesting that the pattern is consistent.
+
+3.  Since both locations show the same curved trend, this provides strong visual evidence that the relationship between density and yield is non-linear for each location.
+
+    Overall: As density increases, yield decreases rapidly at first and then declines more gradually. Since the trend is clearly **non-linear instead of linear**, the graph demonstrates that yield does not change linearly with planting density at either location.
+
+**Q9:**
+
+```{r}
+library(MASS,exclude="select")
+boxcox(yield~dens*location,data=onions)
+```
+
+-   ***Make sense when looking at scatterplot:***
+
+-   **When planting density is low**, the denominator in the transformation 1/yield\^0.5 is relatively small. As a result, even minor changes in yield produce large changes in the transformed value. This reflects the steep decline in yield observed at low densities.
+
+-   **As density increases,** the denominator becomes larger, causing the transformed values to change more gradually. This aligns with the pattern seen in the graph, where yield decreases rapidly initially and then gradually levels off.
+
+    **Moreover**, the curve does not rise again at higher densities but instead approaches a stable asymptote. This indicates that the relationship is not simply quadratic or symmetric; rather, the response approaches a limit. The 1/yield\^0.5 transformation effectively captures this diminishing rate of change, making it a suitable choice for modeling the relationship between planting density and yield.
+
+-   ***Practical Meaning：***
+
+-   At low planting densities, adding more plants causes a rapid decrease in yield per plant due to increasing competition for resources.
+
+-   At high densities, competition is already intense, so further increases in density reduce yield per plant more gradually.
+
+-   This diminishing effect creates a nonlinear, curved relationship between density and yield.
+
+-   To appropriately model this curved relationship, a transformation like the reciprocal square root of yield (1/yield\^0.5) can be used, which helps linearize the data for analysis.
+
+**Q10:**
+
+```{r}
+onions.1<-lm(1/sqrt(yield)~dens*location,data=onions)
+summary(onions.1)
+```
+
+The interaction term between planting density and location (dens:locationVirginia) is statistically significant (p = 4.67 × 10⁻⁸\<0.5). This indicates that the effect of planting density on the transformed response variable differs between the two locations. Consequently, the relationship between density and yield is not the same at Purnong Landing and Virginia.
+
+Because the slope associated with planting density varies by location, the interaction term must be retained in the model. **Removing it would incorrectly imply that planting density has an identical effect on yield across both locations, which the data do not support.**
+
+**Q11:**
+
+```{r}
+library(broom)
+install.packages("marginaleffects")
+library(marginaleffects)
+```
+
+```{r}
+plot_predictions(onions.1,condition=c("dens","location"))
+```
+
+The graph of the predicted values shows that the lines **for the two locations are clearly not parallel**, indicating that the **slope of the relationship between planting density and the transformed response differs** between Purnong Landing and Virginia. Since the effect of planting density on yield varies depending on the location, this confirms the presence of an interaction between density and location. Therefore, the significant interaction term in the regression model is expected and aligns with the observed data. **And it has interaction here.**
+
+**Q12:**
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/mercer-wheat.csv"
+wheat<-read_csv(my_url)
+```
+
+```{r}
+wheat
+```
+
+**Q13:**
+
+Both **grain** and **straw** are quantitative response variables measured for each field. The explanatory variables are the **row** and **col** positions of the field, which are categorical factors. Since there are **multiple response variables** and **categorical explanatory variables**, a **multivariate analysis of variance (MANOVA)** is appropriate to test whether the mean vectors of grain and straw differ across rows and columns.
+
+**Q14:**
+
+```{r}
+y<-with(wheat,cbind(grain,straw))
+head(y)
+```
+
+```{r}
+wheat.1<-manova(y~row*col,data=wheat)
+summary(wheat.1)
+```
+
+Q15:
+
+The null hypothesis states that the amount of wheat grown should be approximately same ("uniform") across all fields.
+
+However, the MANOVA results reveal that **both the row and column effects are statistically significant and the interaction quite siginificant**, as is the interaction between row and column.
+
+This indicates that the combined response variables (grain and straw yield) vary across different locations within the field. Therefore, combined response (wheat production)variable definitely depends on the specific row, column, and their interaction.
+
+Q16:
+
+```{r}
+wheat %>%
+  pivot_longer(grain:straw, names_to = "name", values_to = "score") %>%
+  mutate(combo = str_c(row, "_", col)) %>%
+  ggplot(aes(x = combo, y = score)) +
+  geom_boxplot() +
+  facet_wrap(~name) +
+  coord_flip()
+```
+
+The boxplots show that the distributions of **grain** and **straw** vary across different row–column combinations. In particular, the field **D–M** stands out because its boxplots differ noticeably from many other fields in both the **grain** and **straw** panels. This indicates that the mean levels of grain and straw production are not the same across all locations. Such spatial variation suggests that wheat production depends on the **row and column positions**, as well as their interaction. Therefore, the graph provides visual support for the MANOVA results that wheat production is **not uniform across the field**. Itdepends on the **row, column, and their interaction**.

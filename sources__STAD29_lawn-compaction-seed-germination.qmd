@@ -1,0 +1,130 @@
+---
+title: "STAD29_A1"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(broom)
+install.packages("marginaleffects")
+library(marginaleffects)
+```
+
+## **Rolling a lawn**
+
+1.  (1 point) Read in and display the data (there are only ten observations).
+
+    ```{r}
+    my_url<-"http://ritsokiguess.site/datafiles/roller.csv"
+    roller<-read_csv(my_url)
+    ```
+
+```{r}
+roller
+```
+
+2.  Make a suitable plot of the data. Is the trend apparently linear?
+
+a suitable plot of the data is scatterplot because it only have two quantitative variables.
+
+Although the smooth curve shows some fluctuations in the middle range of weight. Weight and depression appears apromixately linear relationship; depression increases with weight increase. even though in the middle it has a little
+
+```{r}
+ggplot(roller, aes(x=weight,y=depression))+geom_point()+geom_smooth()
+
+```
+
+3.  Fit a suitable regression, and display the output
+
+```{r}
+roller.1<-lm(depression~weight, data=roller)
+summary(roller.1)
+
+```
+
+4.  (4 points) For values of `weight` from 2.5 to 12.5 in steps of 2.5, obtain predicted values of `depression`, along with confidence intervals for the mean `depression` at those weights.
+
+```{r}
+new_weight<-tibble(weight=seq(2.5,12.5,2.5))
+new_weight
+```
+
+```{r}
+cbind(predictions(roller.1,newdata=new_weight))%>%
+  select(estimate,conf.low,conf.high,weight)%>%
+  mutate(length=conf.high-conf.low)
+```
+
+5\. Obtain a plot of the predicted `depression` values against `weight`.
+
+```{r}
+plot_predictions(roller.1,condition="weight")
+```
+
+6.  For one of your predictions in Question 4, verify that its confidence interval matches what you see on your graph of the previous question, describing your process.
+
+Let's look at the prediction at weight = 5.0 tonnes. From Question 4, the predicted mean depression is 11.25 mm and the 95% confidence interval is between 6.82 mm and 15.67 mm. In the graph from Question 5, the confidence band at weight = 5.0 is around the same values and the lower and upper bounds visually match these values. This verifies that the confidence interval values obtained from the prediction table are in agreement with the confidence band in the graph.
+
+## **Orobranche cernua**
+
+7.  (1 point) Read in and display (some of) the data.
+
+    ```{r}
+    my_url<-"http://ritsokiguess.site/datafiles/aod_orob1.csv"
+    orob<-read_csv(my_url)
+    ```
+
+```{r}
+orob
+```
+
+8.  How do you know that there is more than one observation per row of the dataframe?
+
+Each row refers to more than one seed, since the data record the total number of seeds exposed (*n*) and the number that successfully germinated (*y*) at each dilution.
+A second indication is that the response is given as a count of successes rather than an indicator of whether an individual seed germinated or not.
+
+9.  Fit a suitable logistic regression, and display the output.
+
+Because each row summarizes the outcomes of multiple seeds at a given dilution, the response must account for both germinated and non-germinated seeds. Therefore, a logistic regression with a binomial response is fitted using the number of successful germinations and the number of failures as a response matrix.
+
+```{r}
+orob.1<-glm(cbind(y,n-y)~dilution, data=orob,family="binomial")
+summary(orob.1)
+```
+
+10. Is there a significant effect of `dilution` *as a whole*? Explain briefly, obtaining some more output if necessary.
+
+dilution is categorical so we should use drop 1
+
+```{r}
+drop1(orob.1,test="Chisq")
+```
+
+p-value is very small which is 6.2618\*10\^-80, so it is significant, so the test indicates that dilution has a statistically significant overall effect on germination probability. Therefore we should not remove it.
+
+11. Obtain predicted probabilities of germination, with confidence intervals, for each dilution.
+
+```{r}
+new<-tibble(dilution=c("1/1","1/25","1/625"))
+new
+```
+
+```{r}
+cbind(predictions(model=orob.1,newdata=new))%>%
+  select(dilution,estimate,conf.low,conf.high)
+```
+
+12. What do your predictions suggest about the reason for the significance or non-significance of your result in question 10?
+
+The effect of dilution is clearly statistically significant.
+The predicted probabilities for each dilution are estimated with very narrow confidence intervals, indicating a high level of precision in the estimates.
+
+This narrowness suggests that the predicted probabilities are well determined and subject to relatively little uncertainty.
+As a result, dilution explains a substantial portion of the variation in germination probability, leading to a strong and significant effect on the response variable.

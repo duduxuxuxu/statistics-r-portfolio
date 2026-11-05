@@ -1,0 +1,88 @@
+---
+title: "STAC32 Assignment 5"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+#install.packages("devtools")
+#library(devtools)
+#install_github("nxskok/smmr")
+library(smmr)
+library(tidyverse)
+```
+
+## **Shrimp**
+
+Question 1:
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/shrimp.csv"
+shrimp<-read_csv(my_url)
+```
+
+```{r}
+shrimp
+```
+
+Question 2:
+
+```{r}
+ggplot(shrimp,aes(sample=percent))+
+  stat_qq()+stat_qq_line()
+```
+
+Question 3:
+
+Most points follow the line with some small deviations, but there are two points that stand out: one is significantly lower than expected, and the other is slightly higher. The low outlier is at approximately y=26.3 and x=-1.9, which represents a serious deviation from the trend. In contrast, the point at y=35.8 and x=1.9 is a minor outlier, as the difference between this point and the expected value on the line (around y=34) is smaller. Therefore, these deviations, especially the significant low outlier, suggest that the sample may not meet the assumptions of normality.
+
+Question 4:
+
+For purposes of testing, we usually assume that the data follows a normality enough, but based on the analysis of the second question figure and third question explanation, we can know that most points follow the line with small deviations, but two stand out: one significantly lower at ( y = 26.3 ) and ( x = -1.9 ), a serious outlier, and one slightly higher at ( y = 35.8 ) and ( x = 1.9 ), a minor outlier (compared to the expected ( y = 34). These deviations, especially the low outlier, suggest the sample may not meet the normality assumptions.
+
+Additionally, the sample size of the data is very small, only 18, so the central limit theorem can't help us overcome the extreme values.
+
+Therefore, based on the previous two points, the median would be a better summary statistic than the mean for these data.
+
+Question 5:
+
+```{r}
+sign_test(shrimp, percent,30.5)
+```
+
+Explanation:
+
+The question asks us to "test whether the process is functioning correctly," so a two-sided test will be performed. We are testing the null hypothesis (H0) that the median percentage of the declared total weight of shrimp in shrimp cocktail is 30.5, against the alternative hypothesis (Ha) that the median is not 30.5.
+
+Based on the data, the p-value for the two-sided test is 0.0013, which is less than 0.05. Therefore, we reject the null hypothesis (H0) and conclude that there is evidence to suggest that the population median of the percentage of the declared total weight of shrimp in shrimp cocktail is not equal to 30.5.
+
+Additionally, the shrimp cocktail is larger than 30.5 due to the p-value. From upper line, upper p-value is 0.0006561279, which is smaller than 0.05, so we can reject the null and accept the alternative that is median \>30.5. It means the cocktail has particularly high content in process, which is not an incorrect situation; the process is working incorrectly.
+
+Question 6:
+
+Based on the first picture in question 5, we can know that there has 16 numbers above 30.5, only 2 numbers are below 30.5; so if the null are not be rejected, the median will be 30.5, and in the graph there will be half of the data are above 30.5 and approximately half of data are lower than 30.5. And if we reject the null, than the distribution of data will not demonstrate half of data above 30.5 and half lower than 30.5. In fact, in this situation, we can find that the distribution will not going to have half half split, the number of data above 30.5 is larger than it in 30.5, so the median is larger than 30.5, therefore, it is is consistent with our test.
+
+```         
+$above_below
+below above 
+    2    16 
+
+$p_values
+```
+
+Question 7:
+
+```{r}
+ci_median(shrimp, percent, conf.level=0.9)
+```
+
+The output shows that the 90% confidence interval for the median percentage of the declared total weight of shrimp in shrimp cocktail is between 31.21 and 32.40.
+
+Question 8:
+
+How are your confidence interval and your hypothesis test consistent with each other? Explain very briefly.
+
+As we can see in question 7, we are 90% confidence interval for the median percentage of the declared total weight of shrimp in shrimp cocktail is between 31.21 and 32.40. The confidence interval \[31.20586, 32.39531\] is not included in the 30.5. This correspnds with the hypothesis test result, where we rejected the null hypothesis, indicating that the population median is not equal or larger than 30.5

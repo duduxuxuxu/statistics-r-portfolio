@@ -1,0 +1,216 @@
+---
+title: "STAD29_A8"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+## **Amino acid sequencing**
+
+Q1
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/amino_distances.csv"
+amino<-read_csv(my_url)
+```
+
+```{r}
+amino
+```
+
+Q2
+
+```{r}
+amino%>%
+  select(-species)%>%
+  as.dist()->d
+```
+
+```{r}
+class(d)
+```
+
+Q3
+
+```{r}
+amino.1<-hclust(d,method="ward.D")
+plot(amino.1)
+```
+
+Q4:
+
+```{r}
+enframe(amino.1$labels)
+```
+
+```{r}
+amino.1$merge
+```
+
+In order to respond to this query, I first displayed the labels from the hierarchical clustering result using enframe(amino.1\$labels). I took this action because the labels component provides information about the relationship between each species and its index number. Put differently, it indicates which species each number corresponds to, for example, 1 = Bullfrog, 2 = Chicken, 5 = Donkey, 7 = Horse, and so forth. This step is crucial because the clustering output only displays numbers; in order to identify the actual species, I need the labels table. I then looked at the order in which species and clusters were combined using amino.1\$merge. According to class, original species are represented by negative numbers in the merge matrix, whereas previously formed clusters are represented by positive numbers. I examined the first row of the merge matrix since the question asks which two species were initially merged into a cluster. The first row, -5-7, indicates that the first two original species to be combined were species 5 and 7. I then matched these numbers to the species names using the labels table: species 5 is a donkey, and species 7 is a horse. Donkey and horse are therefore the first two species to form a cluster.
+
+Q5:
+
+The final negative value in the merge matrix appears in row 13, which is -4. From row 14 onwards, only positive numbers are present, indicating that the clustering process is now combining existing clusters rather than adding any new individual species.
+
+Referring back to the labels table, species 4 corresponds to Dogfish. Thus, Dogfish is the last individual species to be merged into a cluster.
+
+Therefore, the last individual species added to a cluster is Dogfish.
+
+Q6:
+
+```{r}
+plot(amino.1)
+rect.hclust(amino.1, 4)
+```
+
+```{r}
+plot(amino.1)
+rect.hclust(amino.1,7)
+```
+
+I prefer the 4-cluster solution because it provides a more natural and interpretable grouping of the species. Compared to the 7-cluster solution, the 4-cluster arrangement better captures broader biological relationships and is easier to explain.
+
+In the 4-cluster dendrogram, species group into four meaningful categories: fish/amphibian-related species, reptiles, mammals, and birds. For instance, the mammal cluster includes species such as human, monkey, donkey, horse, kangaroo, rabbit, whale, dog, and pig, while the bird cluster contains turtle, pigeon, chicken, and duck. Although this clustering may not perfectly align with formal biological taxonomy, it offers a clear and understandable overall structure.
+
+On the other hand, the 7-cluster solution provides more detailed segmentation but tends to split broader groups into smaller, more fragmented clusters. Some species even form isolated clusters, making the overall result less cohesive and harder to interpret broadly. This can be seen as over-segmentation rather than a clearer biological summary.
+
+Therefore, the 4-cluster solution strikes a better balance between biological relevance and interpretability. While the 7-cluster solution is also valid, it requires more in-depth explanation to justify the additional subdivisions, ideally supported by external references.
+
+## **Exoplanets**
+
+Q1:
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/exoplanets.csv"
+exoplanets<-read_csv(my_url)
+```
+
+```{r}
+exoplanets
+```
+
+Q9:
+
+```{r}
+exoplanets %>%
+  mutate(across(contains("_"), \(x) scale(x))) %>%
+  select(contains("_")) -> exoplanets.s
+exoplanets.s
+```
+
+Q10:
+
+```{r}
+set.seed(457299)
+exoplanets.s %>%
+  kmeans(5, nstart = 20) -> exoplanets_5
+exoplanets_5
+```
+
+Q11:
+
+```{r}
+exoplanets_5$size
+```
+
+```{r}
+exoplanets_5$centers
+```
+
+To identify the cluster with the fewest exoplanets, I examined exoplanets_5\$size, which lists the number of observations in each cluster. The cluster sizes were 22, 25, 8, 20, and 26, indicating that cluster 3 is the smallest, containing only 8 exoplanets.
+
+Next, I analyzed exoplanets_5\$centers to understand what distinguishes this cluster. This component provides the center values for each cluster across the three variables used in the analysis. Comparing these values reveals how cluster 3 differs from the others.
+
+Specifically, cluster 3 has a very low center value for log*mass, indicating that the exoplanets in this cluster generally have much smaller masses. Its log*period is also below average, suggesting shorter orbital periods. The sqrt_eccen value, however, is neither particularly high nor low, suggesting that eccentricity is not a defining characteristic of this group.
+
+Therefore, cluster 3 is mainly characterized by exoplanets with relatively small mass and short orbital periods.
+
+Q12:
+
+```{r}
+cluster5 <- tibble(
+  exoplanets = exoplanets$id,
+  cluster = exoplanets_5$cluster
+)
+cluster5
+```
+
+```{r}
+cluster5 %>%
+  filter(cluster == 3)%>%pull(exoplanets)
+```
+
+Q13:
+
+```{r}
+get_tot_withinss <- function(i, d) {
+  d %>%
+    select(where(is.numeric)) %>%
+    kmeans(i, nstart = 20) -> km
+  km$tot.withinss
+}
+
+tibble(clusters = 2:20) %>%
+  rowwise() %>%
+  mutate(tot_withinss = get_tot_withinss(clusters, exoplanets.s)) -> cluster_elbow
+
+cluster_elbow
+```
+
+```{r}
+ggplot(cluster_elbow, aes(x = clusters, y = tot_withinss)) +
+  geom_point() +
+  geom_line()
+```
+
+Based on the plot, I believe that choosing 6 clusters is appropriate. The total within-cluster sum of squares drops significantly up to 6 clusters, but beyond that point, the decrease slows down and the curve flattens. This means that while adding more clusters after 6 continues to reduce the within-cluster sum of squares, the improvement is much smaller compared to earlier stages. This pattern indicates that 6 clusters represent a sensible elbow point.
+
+Thus, a suitable number of clusters to consider—other than 5—is 6.
+
+Q14:
+
+```{r}
+set.seed(457299)
+exoplanets.s %>%
+  kmeans(6, nstart = 20) -> exoplanets_6
+
+exoplanets_6
+```
+
+Q15:
+
+```{r}
+cluster6 <- tibble(
+  exoplanets = exoplanets$id,
+  cluster = exoplanets_6$cluster
+)
+
+cluster6 %>% 
+  filter(exoplanets == 3)
+```
+
+```{r}
+cluster6 %>% 
+  filter(cluster == 3) %>% 
+  pull(exoplanets)
+```
+
+```{r}
+# compare with Q12
+cluster5 %>% 
+  filter(cluster == 3) %>% 
+  pull(exoplanets)
+```
+
+I chose exoplanet **3** from Question 12. Since the question says that it does not matter which one is chosen, I simply used exoplanet 3. In the **6-cluster solution** from Question 14, exoplanet 3 belongs to **cluster 3**. The other exoplanets in that same cluster are **4, 8, 12, 14, 18, 22, and 56**.
+
+Comparing this with Question 12, I found that the cluster membership is **the same**: the exoplanets in cluster 3 are again **3, 4, 8, 12, 14, 18, 22, and 56**. Therefore, the cluster membership in Questions 12 and 14 is **very similar — in fact, identical for this group**.
+
+This suggests that this small group of exoplanets is **very stable** across different choices of cluster number. These exoplanets appear to share distinctive characteristics, especially **relatively low mass and short period**, so they remain grouped together even when the number of clusters changes from 5 to 6.

@@ -1,0 +1,117 @@
+---
+title: "STAC32 Assignment 1"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+# **Walking the dogs**
+
+***Question 1:***(3 points) Read (into R) the datafile and display at least some of the dataframe. (Here, and elsewhere in the course, “display at least some of the dataframe” means to display at least 10 rows and as many columns as will fit in your display.)
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/Stat2Data_WalkTheDogs.csv"
+WalkTheDogs<-read.csv(my_url)
+```
+
+```{r}
+WalkTheDogs
+```
+
+Explanation: The URL suffix is csv, so it is read as read.csv.
+
+***Question 2:***(3 points) Make a graph that shows how many times each type of weather was observed. Which type of weather was most common? Explain briefly.
+
+```{r}
+ggplot(WalkTheDogs,aes(x=Weather))+geom_bar()
+```
+
+Explanation: We choose to use Bar chart graph since Weather is categorical variable (1 categorical & 0 quantitative). This bar chart shows the occurrences of each type of weather. On the graph, it helps identify the weather type with the highest frequency, so the type of shine has highest frequency, which means it is most common weather. Shine has about 119 days. Rain is about 35 days, and cold is about 69 days. Following is in order to confirm my guess.
+
+```{r}
+ WalkTheDogs%>% group_by(Weather) %>% summarize(count=n())
+```
+
+***Question 3:*** (2 points) Make a graph that shows the distribution of distance walked each day.
+
+```{r}
+ggplot(WalkTheDogs,aes(x=Miles))+geom_histogram(bins=10)
+```
+
+***Question 4:*** Does the person walk further on average on a day when they walked the dogs, as compared to when they did not? Make a suitable graph that will help you answer this question. What do you conclude? (Hint: for the column that indicates whether they walked the dogs, should this be quantitative or categorical? What will R treat this as? Your first attempt at a graph may not come out right. (Read the message carefully to figure out what to do.)
+
+```{r}
+ggplot(WalkTheDogs,aes(x=factor(Walk),y=Miles))+geom_boxplot()
+```
+
+Explanation: for the column (Walk) that indicates whether they walked the dogs, this should be a **categorical variable**. Although the walk is quantitative type (0,1), the meaning of that is Yes and No (0=no, 1=yes). Miles is a **quantitative variable**, so we choose a side-by-side boxplot (1 categorical, 1 quantitative). The person walk further on average on a day when they walked the dogs, as compared to when they did not. Both distributions (days with and without walking the dogs) are **right-skewed**. **Median:** The overlapping part is moderately small between have dog and don't have dog, so the difference between medians is not small. The median miles walked when walking the dogs is higher, about 3.6, compared to the days when not walking the dogs, about 2.6 miles. **Spread:** on the graph, IQR (Q3-Q1) for dogs who walked is about (2.7-3.9 miles), and the days without walking the dogs is about (1.3 miles to 3.76 miles). It can show that the days with dogs walking have more variability in how many distances they walked. Outliers: we have more outliers on the person who walked the dogs, meaning walking the dogs will lead to some people having longer distance walking. **Conclusion:** people who walked with dogs has distance walked slightly lower than the one who don't walked with the dogs.
+
+***Question 5:*** (2 points) Make a graph that shows how many times the author walked on each day of the week (without considering any of the other variables). What is wrong with your graph? Explain briefly. (If your graph does not have anything wrong with it, explain briefly how you fixed the problem you encountered.)
+
+```{r}
+ggplot(WalkTheDogs,aes(x=Day))+geom_bar()
+```
+
+Explanation: The problem may be that the order of the days of the week is not correct, he does not follow the order of Monday, Tuesday, Wednesday... .Sort instead and skip straight to Friday. Because we only have the first letter, the computer can't know what representation for each letter, so it can only follow the order of letters: a,b,c,d,e..... Therefore, the order will be the identity problem for this graph, leading the misunderstanding and wrong information delivery for the audience.
+
+***Question 6:*** (3 points) Is there a relationship between the number of steps taken in a day (explanatory) and the distance travelled in that day (response)? Make a graph to investigate. What do you learn from your graph? Based on what you can find out about pedometer apps, does your graph make sense? Explain briefly. (Cite a source for your answer.)
+
+```{r}
+ggplot(WalkTheDogs,aes(x=StepCount, y=Miles))+geom_point()
+```
+
+Explanation: There is perfect upward trend linear relationship between Stepcount (quantitative variables) and Miles (quantitative variable). the strength is very strong, the data points are mostly closed to the regression line. And there is only one outlier. Miles(Total distance walked) in the day is increasing as the Stepcount increased.
+
+According to "[https://steps.app](https://steps.app/)/" this app show the relationship between step and distance by using your iphone automatic recording system. This app shows Miles (total distance walked) in the day is increasing as the Step increased. This fit the relationship between step and miles shown in the graph, so the graph is make sense.
+
+# **Reading files**
+
+***Question 7:*** (2 points) Take a look at the file at <http://ritsokiguess.site/datafiles/adhd-2.txt>. There are four observations on a variable `y` for each of 24 individuals, measured at times 0, 15, 30, and 60 minutes after a treatment. Considering that you will want to read these data into a dataframe, what is the key issue that will help you decide how to do it?
+
+First step is to see the layout of dataset, we can see the values is separated by **one "\#" ,** it is separately by one **character**/space, and the character is "\#".
+
+***Question 8:*** （2 points) Hence, read in and display (some of) the data.
+
+The data in <http://ritsokiguess.site/datafiles/heart-rates.xlsx> are a spreadsheet of heart rate values for a sample of male and female patients (as identified by the patients themselves). We want to read these data into a dataframe and make a graph.
+
+```{r}
+url<-"http://ritsokiguess.site/datafiles/adhd-2.txt"
+adhd<-read_delim(url,"#")
+```
+
+```{r}
+adhd
+```
+
+***Question 9:*** (2 points) When reading a spreadsheet into R, the file with the spreadsheet in it has to be “local”, that is, on the same machine that you are running R. R has a function `download.file` that takes two inputs: a URL and a name for the local version of the spreadsheet file. Run this to save a local copy of the spreadsheet. Hint: if you are running R on your own machine that is running Windows, you may need to add a third input `mode = "wb"` to `download.file`.)
+
+```{r}
+#install.packages("readxl")
+library(readxl)
+```
+
+```{r}
+url_heart<-"http://ritsokiguess.site/datafiles/heart-rates.xlsx"
+download.file(url_heart,"heart-rates.xlsx",mode="wb")
+```
+
+Question 10: (2 points) Read the spreadsheet file that you downloaded into a dataframe, and display (some of) that dataframe. There is only one sheet in the workbook, and it is called `Sheet1`. The columns are called `gender` and `heartrate`.
+
+```{r}
+a<-read_excel("heart-rates.xlsx", sheet="Sheet1")
+a
+```
+
+Question 11: (2 points) Make a suitable graph of the two columns in your dataframe.
+
+```{r}
+ggplot(a,aes(x=gender, y=heartrate))+geom_boxplot()
+```
+
+Because it is one categorical variable (gender), and one quantitative variable (heartrate), we use the side-by-side boxplot to make the graph. On the graph, we can see the The median heart rate for females is around 74 beats per minute (bpm). For males, the median heart rate is slightly higher, around 76 bpm. IQR (spread), the females have more variability, and the overlapping is small. Outlier: only males have one outlier. Conclusion: This boxplot shows differences in central tendency (median) and variability (IQR) in heart rates for males and females.

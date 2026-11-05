@@ -1,0 +1,130 @@
+---
+title: "STAC32 Assignment 3"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+## **Copper in Wholemeal Flour**
+
+**Question 1:**
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url<-"http://ritsokiguess.site/datafiles/flour.csv"
+copper1<-read_csv(url)
+```
+
+```{r}
+copper1
+```
+
+**Question 2:**
+
+```{r}
+copper1 %>% 
+  mutate(log_copper=log(copper)) %>% 
+  ggplot(aes(y=log_copper))+geom_boxplot()
+```
+
+Using a logarithmic transformation like the log function to reduce skewness and the impact of outliers, and compress the range of data, making the distribution more normal and easier to analyze and visualize. Unlike not using the log function shown under that has a very extreme outlier, which can't show the whole distribution reasonably well):
+
+```{r}
+ggplot(copper1,aes(y=copper))+geom_boxplot()
+```
+
+**Question 3:**
+
+```{r}
+tibble(sim=1:1000) %>% 
+  rowwise() %>% 
+  mutate(sample2=list(sample(copper1$copper, replace=TRUE))) %>% 
+  mutate(mean2=mean(sample2)) %>% 
+  ggplot(aes(x=mean2))+geom_histogram(bins=8)
+```
+
+**Question 4**
+
+1.  The histogram of sampling distribution of the sample mean of copper appears to be right-skewed, which shows the mean is higher than the median. This also shows it is not the normal distribution. 2. Also, the sample size is 24, which is not large enough to overcome the not normality (that is skewness and outlier). 3. So based on the size of dataset is too small, and the distribution is not normal. 4. We can't use the t-test and mean of copper since the copper data set is not normality.
+
+## **Sunspots**
+
+**Question 5:**
+
+```{r}
+url1<-"http://ritsokiguess.site/datafiles/sunspot_count.csv"
+sunspots2<-read_csv(url1)
+```
+
+```{r}
+sunspots2
+```
+
+**Question 6:**
+
+```{r}
+ggplot(sunspots2,aes(x=since1900,y=sunspots))+geom_boxplot()
+```
+
+Explanation: The boxplot shows that counts of sunspot have increased on average after 1900, as indicated by the higher median.
+
+**Question 7:**
+
+"Some astronomers are interested in whether the average number of sunspots has increased since 1900"
+
+H0: mean after 1900= mean before 1900
+
+Ha: mean after 1900\> mean before 1900
+
+```{r}
+t.test(sunspots~since1900,data=sunspots2, alternative ="greater")
+```
+
+**Explanation:** As we can see in the question 6, the spread of two group is not equal, the spread of after1900 is larger and the before 1900 is smaller. This is because the the variability q3-q1 of after 1900 is larger. Therefore, we can choose the Welch Two sample t-test. 2. The proposal is whether the average number of sunspots has increased since 1900 which is astronomers (mentioned in the previous part) are interested in. the letter "a" in (after) is before the letter"b" (before) alphabetically, so we use the "larger".Ha: mean after 1900\> mean before 1900.
+
+**Question 8**
+
+Explanation: The p-value of 0.004912 is less than the typical significance level of 0.05, meaning we reject the null hypothesis. So, it means we have less than a 0.5% chance to make the mistake that reject the statement that true difference in means between group after and group before is less and equal than 0, which is very small mistake. So we can reject the null hypothesis that mean after 1900 \<= mean before 1900. The observed difference in means (or a more extreme difference) would occur if there were truly. So there is certainly dramatically increase in the average number of sunspots per month after 1900.
+
+**Question 9**
+
+```{r}
+sunspots2 %>% count(since1900)
+```
+
+Explanation: The sample sizes are large enough (89 observations after 1900 and 200 before 1900), so it can overcome the skewness and outlier, based on Central limit theorem, we can use the t-test.
+
+There is another way to demonstrate we can use the t-test
+
+```{r}
+sunspots2 %>% filter(since1900=="after")->after_1900
+tibble(sim=1:1000) %>% 
+  rowwise() %>% 
+  mutate(sample3=list(sample(after_1900$sunspots,replace=TRUE))) %>% 
+  mutate(mean2=mean(sample3)) %>% 
+  ggplot(aes(x=mean2))+geom_histogram(bins=15)
+```
+
+```{r}
+sunspots2 %>% filter(since1900=="before")->before_1900
+tibble(sim=1:1000) %>% 
+  rowwise() %>% 
+  mutate(sample4=list(sample(before_1900$sunspots,replace=TRUE))) %>% 
+  mutate(mean3=mean(sample4)) %>% 
+  ggplot(aes(x=mean3))+geom_histogram(bins=15)
+```
+
+The sampling distribution of the sample mean from 2 groups is nearly normal because the sample size is large enough to overcome skewness and outlier, based on central limit theorem, we can use the t-test because is nearly normal distribution.
+
+**Question 10:**
+
+```{r}
+ggplot(sunspots2,aes(x=year,y=sunspots,colour=since1900))+geom_point()+geom_line()
+```
+
+Explanation: the data from each group is an approximate 11-year cycle changed, which shows the periodic change that repeatedly occur the peak and the bottom from every 11-year cycle, and it is time trend, which means the observations within each group are not independent of each other, instead is depend on each other. For example, this years average number of sunspots maybe related to previous year, so the t-test assumption is not satisfied.

@@ -1,0 +1,135 @@
+---
+title: "STAC32 Assignment 7"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+```
+
+## **Crabs**
+
+1\.
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/crabs.csv"
+crabs<-read_csv(my_url)
+```
+
+```{r}
+crabs
+```
+
+Question 2:
+
+```{r}
+crabs%>%select(sp,CL)->crabs2
+crabs2
+```
+
+Question 3:
+
+```{r}
+crabs2%>%pivot_wider(names_from=sp,values_from=CL)
+```
+
+There are two columns, one column for each species, but values from CL are not uniquely identified; two-column output will contain list-cols. Each column has 100 data points.
+
+Because of the layout error in the original data, the data doesn't appear in pairs, so CL not uniquely identified.
+
+It is no problem about the column name of sp, but every CL values in each rows are missing combinations of other columns that can be used to name in pivot wider, there are no more columns to identify each other. How values are arranged depends on other combinations of cols not mentioned in pivot_wider. So they all have to fit into one cell in a wider data frame.
+
+Question 4:
+
+```{r}
+crabs%>%select(sp,sex,CL,index)->crabs3
+crabs3
+```
+
+Question 5:
+
+```{r}
+crabs3%>%pivot_wider(names_from=sp,values_from=CL)
+```
+
+Yes, make sense; additional identifiers such as sex and index has uniquely determine which `CL` value corresponded to which row when pivoting.
+
+Because now except the sp, CL, we have column of sex and index, which means the row comes from the combination of other columns not named in the pivot_wider: the ones called sex and index. Without the sex and index, it will cause pivot_wider to store values as lists instead of scalar values.
+
+Values in species B are uniquely identified using the combination of sex and index. For example, sp B, sex M index 1 corresponds to 16.1 in CL. This ensures there is no ambiguity, unlike the earlier attempt without sex and index.
+
+## **Consumption of natural gas**
+
+Question 6
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/texasgas.csv"
+gas<-read_csv(my_url)
+```
+
+```{r}
+gas
+```
+
+Question 7:
+
+```{r}
+ggplot(gas, aes(y=consumption, x=price))+
+  geom_point()+geom_smooth()
+```
+
+Question 8:
+
+1.  direction: there is downward tend relationship between price and consumption: as price increases, consumption decrease. Be specifically, when price lower than 60, it is strong downward sloping, however when the price is larger than 60, it go downhill trend.
+2.  Form: trend more or less linear for while, then curves upwards.
+3.  Strength: this is a moderate-to-strong relationship
+
+Question 9:
+
+```{r}
+gas.1<-lm(consumption~price,data=gas)
+summary(gas.1)
+```
+
+Question 10:
+
+```{r}
+ggplot(gas.1,aes(x=.fitted,y=.resid))+geom_point()
+```
+
+There is a "fanning-out": the residuals are getting bigger in size (both side further away from zero) as the fitted values get bigger. That is when the price become larger, the residuals size become larger. The residual plot should be a random scatter of points, smooth trend is more straight across at 0.
+
+Question 11:
+
+ifelse returns a value with the same shape as test, filled with elements selected from yes or no, depending on whether the element of test is TRUE or FALSE. The value returned if the condition is True. The value returned if the condition is False. For example, ifelse(consumption\>20, consumption+1, 0), if the consumption now is 21, then it will be 22.
+
+Question 12:
+
+```{r}
+gas%>%mutate(gt=ifelse(price>60,price-60,0))->gas2
+gas2
+```
+
+Question 13:
+
+```{r}
+gas2.1<-lm(consumption~price+gt,data=gas2)
+summary(gas2.1)
+```
+
+Question 14:
+
+```{r}
+ggplot(gas,aes(y=consumption,x=price))+
+  geom_point()+
+  geom_line(data=gas2.1,aes(y=.fitted))
+```
+
+From price 30, it starts decrease sharply linear trend, until price 60. Start with 60, it has slowly downhill. thus we can see the form is two line connected together, first line sharply decreased, the second line slowly decreased.
+
+practically speaking, when price lower than 60, the fluctuation of price is strongly effect the people's usage, when price increased a little, then the consumption will be decrease sharply. But when price is higher than 60, the sensitive that people towards the price is become relative low, even price increase, the usage decreased slowly.

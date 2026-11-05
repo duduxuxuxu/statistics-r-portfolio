@@ -1,0 +1,203 @@
+[
+  {
+    "course": "STAC32",
+    "number": 0,
+    "title": "Car Fuel Economy",
+    "methods": "Exploratory Data Analysis & Reproducible Reports",
+    "description": "An introductory R report explores the mtcars dataset with descriptive summaries and a histogram of fuel economy.",
+    "path": "reports__STAC32_car-fuel-economy.html",
+    "source": "sources__STAC32_car-fuel-economy.qmd",
+    "format": "HTML",
+    "slug": "car-fuel-economy"
+  },
+  {
+    "course": "STAC32",
+    "number": 1,
+    "title": "Daily Activity, Attention & Heart Rates",
+    "methods": "Data Import, Visualization & Mixed File Formats",
+    "description": "Explore daily dog-walking activity, then work with attention and heart-rate data imported from text and spreadsheet files.",
+    "path": "reports__STAC32_daily-activity-attention-heart-rates.html",
+    "source": "sources__STAC32_daily-activity-attention-heart-rates.qmd",
+    "format": "HTML",
+    "slug": "daily-activity-attention-heart-rates"
+  },
+  {
+    "course": "STAC32",
+    "number": 2,
+    "title": "Baseball Players & Lake Acidity",
+    "methods": "One-Sample Inference & Confidence Intervals",
+    "description": "Investigate baseball-player weights and lake acidity using numerical summaries, confidence intervals and hypothesis tests.",
+    "path": "reports__STAC32_baseball-players-lake-acidity.html",
+    "source": "sources__STAC32_baseball-players-lake-acidity.qmd",
+    "format": "HTML",
+    "slug": "baseball-players-lake-acidity"
+  },
+  {
+    "course": "STAC32",
+    "number": 3,
+    "title": "Copper in Flour & Sunspot Activity",
+    "methods": "Transformations, Distribution Checks & Inference",
+    "description": "Examine copper measurements in wholemeal flour and sunspot counts, with attention to distributional shape and the assumptions behind inference.",
+    "path": "reports__STAC32_copper-in-flour-sunspot-activity.html",
+    "source": "sources__STAC32_copper-in-flour-sunspot-activity.qmd",
+    "format": "HTML",
+    "slug": "copper-in-flour-sunspot-activity"
+  },
+  {
+    "course": "STAC32",
+    "number": 4,
+    "title": "Designing an Experiment with Enough Power",
+    "methods": "Monte Carlo Simulation & Sample-Size Planning",
+    "description": "Compare simulated and theoretical test power, explore how sample size changes detection rates, and plan a treatment-control experiment.",
+    "path": "reports__STAC32_designing-an-experiment-with-enough-power.html",
+    "source": "sources__STAC32_designing-an-experiment-with-enough-power.qmd",
+    "format": "HTML",
+    "slug": "designing-an-experiment-with-enough-power"
+  },
+  {
+    "course": "STAC32",
+    "number": 5,
+    "title": "Quality Control in Shrimp Cocktails",
+    "methods": "Sign Tests & Confidence Intervals for a Median",
+    "description": "Assess whether shrimp content is consistent with a production target, using a normality check and methods robust to outliers.",
+    "path": "reports__STAC32_quality-control-in-shrimp-cocktails.html",
+    "source": "sources__STAC32_quality-control-in-shrimp-cocktails.qmd",
+    "format": "HTML",
+    "slug": "quality-control-in-shrimp-cocktails"
+  },
+  {
+    "course": "STAC32",
+    "number": 6,
+    "title": "Irish Wind Speeds & Blood Coagulation",
+    "methods": "Paired Comparisons, ANOVA & Nonparametric Tests",
+    "description": "Compare wind measurements recorded on matching days and investigate differences in coagulation times across diets.",
+    "path": "reports__STAC32_irish-wind-speeds-blood-coagulation.html",
+    "source": "sources__STAC32_irish-wind-speeds-blood-coagulation.qmd",
+    "format": "HTML",
+    "slug": "irish-wind-speeds-blood-coagulation"
+  },
+  {
+    "course": "STAC32",
+    "number": 7,
+    "title": "Crab Species & Natural Gas Demand",
+    "methods": "Data Reshaping, Regression & Model Diagnostics",
+    "description": "Reshape crab measurements into analysis-ready tables and examine a regression model for natural gas consumption.",
+    "path": "reports__STAC32_crab-species-natural-gas-demand.html",
+    "source": "sources__STAC32_crab-species-natural-gas-demand.qmd",
+    "format": "HTML",
+    "slug": "crab-species-natural-gas-demand"
+  },
+  {
+    "course": "STAC32",
+    "number": 8,
+    "title": "Rocket Thrust & Concrete Setting",
+    "methods": "Nonlinear Relationships & Regression Diagnostics",
+    "description": "Explore how rocket thrust efficiency varies with angle and model concrete-setting measurements, checking departures from a straight-line relationship.",
+    "path": "reports__STAC32_rocket-thrust-concrete-setting.html",
+    "source": "sources__STAC32_rocket-thrust-concrete-setting.qmd",
+    "format": "HTML",
+    "slug": "rocket-thrust-concrete-setting"
+  },
+  {
+    "course": "STAC53",
+    "number": 1,
+    "title": "Household Income & Petition Signatures",
+    "methods": "Survey Sampling, Population Totals & Uncertainty",
+    "description": "Estimate population quantities from samples, including household income and petition signatures, and explore inclusion probabilities and systematic sampling.",
+    "path": "reports__STAC53_household-income-petition-signatures.pdf.html",
+    "source": null,
+    "format": "PDF",
+    "slug": "household-income-petition-signatures"
+  },
+  {
+    "course": "STAC53",
+    "number": 2,
+    "title": "Workplace Wellness & Timber Resources",
+    "methods": "Stratified Sampling, Optimal Allocation & Precision",
+    "description": "Allocate a wellness survey across departments, estimate roadside timber volume, and compare sampling designs and required sample sizes.",
+    "path": "reports__STAC53_workplace-wellness-timber-resources.pdf.html",
+    "source": null,
+    "format": "PDF",
+    "slug": "workplace-wellness-timber-resources"
+  },
+  {
+    "course": "STAC53",
+    "number": 3,
+    "title": "Schools, Household Energy & Influenza Risk",
+    "methods": "Ratio Estimation, Regression Estimation & Risk Measures",
+    "description": "Explore estimator bias using school data, estimate household electricity use with an auxiliary variable, and assess the association between vaccination and influenza.",
+    "path": "reports__STAC53_schools-household-energy-influenza-risk.pdf.html",
+    "source": null,
+    "format": "PDF",
+    "slug": "schools-household-energy-influenza-risk"
+  },
+  {
+    "course": "STAD29",
+    "number": 1,
+    "title": "Lawn Compaction & Seed Germination",
+    "methods": "Regression, Binomial Models & Predicted Responses",
+    "description": "Investigate the relationship between lawn-roller weight and compaction, then model germination outcomes for parasitic-plant seeds.",
+    "path": "reports__STAD29_lawn-compaction-seed-germination.html",
+    "source": "sources__STAD29_lawn-compaction-seed-germination.qmd",
+    "format": "HTML",
+    "slug": "lawn-compaction-seed-germination"
+  },
+  {
+    "course": "STAD29",
+    "number": 3,
+    "title": "Chicago Voting Patterns & Halifax Snowfall",
+    "methods": "Multinomial Models & Categorical Outcomes",
+    "description": "Relate precinct voting outcomes to voter composition in Chicago and examine categorical weather outcomes in Halifax.",
+    "path": "reports__STAD29_chicago-voting-patterns-halifax-snowfall.html",
+    "source": "sources__STAD29_chicago-voting-patterns-halifax-snowfall.Rmd",
+    "format": "HTML",
+    "slug": "chicago-voting-patterns-halifax-snowfall"
+  },
+  {
+    "course": "STAD29",
+    "number": 4,
+    "title": "Remission in Acute Myeloid Leukemia",
+    "methods": "Survival Analysis & Cox Proportional Hazards",
+    "description": "Compare remission duration under maintenance and no-maintenance treatment in a small teaching dataset, accounting for censored observations.",
+    "path": "reports__STAD29_remission-in-acute-myeloid-leukemia.html",
+    "source": null,
+    "format": "HTML",
+    "slug": "remission-in-acute-myeloid-leukemia"
+  },
+  {
+    "course": "STAD29",
+    "number": 6,
+    "title": "Onion Density & Wheat Field Variation",
+    "methods": "Interactions, Transformations & MANOVA",
+    "description": "Study onion yields across planting densities and locations, and investigate spatial variation in wheat grain and straw. The report also uses planned contrasts for age-group differences in fact-versus-opinion scores.",
+    "path": "reports__STAD29_onion-density-wheat-field-variation.html",
+    "source": "sources__STAD29_onion-density-wheat-field-variation.Rmd",
+    "format": "HTML",
+    "slug": "onion-density-wheat-field-variation",
+    "image": "assets__STAD29-6.png"
+  },
+  {
+    "course": "STAD29",
+    "number": 7,
+    "title": "Self-Esteem over Time & Rainforest Leaves",
+    "methods": "Repeated Measures, Mixed Models & Discriminant Analysis",
+    "description": "Analyze repeated self-esteem measurements and investigate whether leaf-shape measurements distinguish rainforest groups.",
+    "path": "reports__STAD29_self-esteem-over-time-rainforest-leaves.html",
+    "source": "sources__STAD29_self-esteem-over-time-rainforest-leaves.Rmd",
+    "format": "HTML",
+    "slug": "self-esteem-over-time-rainforest-leaves",
+    "image": "assets__STAD29-7.png"
+  },
+  {
+    "course": "STAD29",
+    "number": 8,
+    "title": "Patterns Among Exoplanets & Species",
+    "methods": "K-Means Clustering & Cluster Stability",
+    "description": "Group exoplanets by standardized physical features, explore alternative cluster counts with a custom function, and compare cluster membership. A second analysis examines genetic distances among vertebrate species.",
+    "path": "reports__STAD29_patterns-among-exoplanets-species.html",
+    "source": "sources__STAD29_patterns-among-exoplanets-species.Rmd",
+    "format": "HTML",
+    "slug": "patterns-among-exoplanets-species",
+    "image": "assets__STAD29-8.png"
+  }
+]

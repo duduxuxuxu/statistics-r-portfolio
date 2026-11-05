@@ -1,0 +1,143 @@
+---
+title: "STAC32 Assignment 6"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+## **Wind in Ireland**
+
+Question 1
+
+```{r}
+#install.packages("PMCMRplus")
+library(tidyverse)
+```
+
+```{r}
+#install.packages("devtools")
+#library(devtools)
+#install_github("nxskok/smmr")
+library(smmr)
+library(PMCMRplus)
+```
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/wind.csv"
+wind<-read_csv(my_url)
+```
+
+```{r}
+wind
+```
+
+Question 2:
+
+It is matched pairs data because, firstly, it compares measurements of the daily average wind speed on each day for each of 12 weather stations from two different but relatively close locations (Valentia and Dublin). It means we calculate the average wind speed from a very closed location. Secondly, two locations are both within a single small country (Ireland), meaning the val and dub will be very closed so the weather pattern will be approximately similar in the two locations on the same day. Therefore, it reasonable to pair the wind speed data from both stations for each specific day.
+
+Question 3:
+
+```{r}
+wind%>%mutate(diff=VAL-DUB)->Wind_diff
+ggplot(Wind_diff,aes(sample=diff))+stat_qq()+stat_qq_line()
+```
+
+access appropriateness of a matched-pairs t-test is to see whether it is normal, so we use the quantile normality to see whether the differ is normal.
+
+Question 4:
+
+1.  Daily wind speed measurements in Valencia and Dublin are paired, allowing comparisons to be made between the two locations. The reason is clearly stated in question 2.
+
+2.  Matched pairs analyses assume that differences are normal distributed. Based on the question's normal quantile plot, the middle points follow the line perfectly, Although there is some deflection at both ends (high to high, low to low), it is not far from the line, and the sample size is particularly large (6574), so the data is consistent with normal distributed.
+
+    Therefore, the researchers decided to run a matched-pairs t-test.
+
+    Question 5:
+
+    ```{r}
+    with(wind, t.test(VAL,DUB, paired=TRUE,alternative="greater"))
+    ```
+
+    p-value very small \< a, so reject H0 that mean wind speed difference between VAL and DUB is 0 (against the one-sided alternative that it is greater than 0). So there is evidence that the true mean difference of VAL and DUB wind spead is greater than 0.
+
+Question 6:
+
+```{r}
+with(wind,t.test(VAL,DUB,paired=TRUE,conf.level=0.99))
+```
+
+The 99% confidence interval for the difference in daily mean wind speed between Valencia and Dublin is about 0.72 to 0.98 knots.
+
+Question 7:
+
+```{r}
+my_url<-"http://ritsokiguess.site/datafiles/faraway_coagulation.csv"
+Blood<-read_csv(my_url)
+```
+
+Question 8:
+
+```{r}
+ggplot(Blood,aes(x=diet,y=coag))+geom_boxplot()
+```
+
+Question 9:
+
+```{r}
+Blood2<-aov(coag~diet,data=Blood)
+summary(Blood2)
+```
+
+This p-value is very small with 4.66\*10\^-5 which is smaller than 0.05, so reject H0 that the mean of coagulation times are all the same for each diet. Therefore, it concludes that the mean of coagulation time not all the same for each diet.
+
+Question 10:
+
+```{r}
+TukeyHSD(Blood2)
+```
+
+Question 11:
+
+```{r}
+oneway.test(coag~diet,data=Blood)
+```
+
+P-value is 0.0003 \<a, which is very low, less than 0.05. indicating that there is a statistically significant difference in the mean coagulation times among the different diets.
+
+Question 12:
+
+```{r}
+gamesHowellTest(coag~factor(diet),data=Blood)
+```
+
+Question 13:
+
+```{r}
+median_test(Blood,coag,diet)
+```
+
+The P-value is 0.0007 \<a, which is very low, less than 0.05. indicating that there is a statistically significant difference in the median of coagulation times among the different diets.
+
+```{r}
+pairwise_median_test(Blood,coag,diet)
+```
+
+```{r}
+ggplot(Blood,aes(sample=coag))+stat_qq()+stat_qq_line()+facet_wrap(~diet)
+```
+
+we need to test normality within each group and equal spread between groups.
+
+From each graph analysis:
+
+A is approx. normal distributed. B has a high outlier, C has slightly higher outlier, D has left skewed.
+
+Based on the question 8, we can see the number of data is relative small, but the left skewed is obvious.
+
+Also, the sample size is very small, both is less than 10, Mood’s median test is a non-parametric method that does not assume normality, making it more suitable for small, non-normally distributed samples. Thus the mood's median test is suitable.
+
+Question 16:
+
+The corrected P-value of A-B and A-C pairs was about 0.059, slightly lower than the significance level of 0.10, indicating that there were significant differences in coagulation time between diet A and diet B and between diet A and diet C. B-D and C-D had even lower corrected P-values (0.034 and 0.007, respectively), suggesting a clear difference between these dietary pairs. The adjusted P-value for A-D is 1.000, indicating no significant difference between A and D. So A is significantly different from the others, D is significantly different from the others, and A is not significantly different from D. From graph 8, we can see the diet A and diet D boxplot is lower than diet B and diet C. Thus, A and D is the best diets for blood coagulation.

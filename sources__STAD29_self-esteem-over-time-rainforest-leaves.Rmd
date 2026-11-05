@@ -1,0 +1,238 @@
+---
+title: "STAD29_A7"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+install.packages("car")
+library(car)
+```
+
+```{r}
+install.packages("Matrix")
+install.packages("lme4")
+library(MASS,exclude="select")
+library(lme4)
+```
+
+Q1
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/self-esteem.csv"
+esteem<-read_csv(my_url)
+```
+
+```{r}
+esteem
+```
+
+Q2:
+
+A repeated measures analysis is needed because each participant is observed at multiple time points. In this dataset, se1, se2, and se3 record self-esteem scores for the same individuals over three months. Since these observations come from the same subjects, they are not independent. As a result, the observations are not independent, making a repeated measures method suitable.
+
+Q3:
+
+```{r}
+esteem %>% select(starts_with("se")) %>% 
+  as.matrix() -> response
+esteem.1 <- lm(response ~ regime, data = esteem)
+times <- colnames(response)
+times.df <- data.frame(times = factor(times))
+esteem.2 <- Manova(esteem.1, idata = times.df, idesign = ~ times)
+summary(esteem.2)
+```
+
+Q4
+
+Firstly, we follow a structured decision process by examining the sphericity assumption using the Mauchly test. The reported p-value is 0.014, which is less than the 0.05 significance level. As a result, we reject the null hypothesis of sphericity and conclude that the assumption is violated.
+
+Because sphericity is not satisfied, we refer to the Huynh–Feldt (HF) corrected results. The HF-corrected p-value for the interaction term (regime × time) is 0.0099, which is below 0.05, indicating a statistically significant interaction effect.
+
+This indicates that the treatment regime has an effect on self-esteem scores, but this effect changes over time. In other words, the influence of the treatment differs across the three months rather than remaining consistent.
+
+Q5：
+
+```{r}
+esteem_long <- esteem %>%
+  pivot_longer(starts_with("se"),
+               names_to = "Month",
+               values_to = "Values")
+esteem_long
+```
+
+```{r}
+esteem_long%>%
+  group_by(regime,Month)%>%
+  summarize(mean_values=mean(Values))->means
+```
+
+```{r}
+means
+```
+
+```{r}
+ggplot(means,aes(x=Month,y=mean_values,colour=regime,group=regime))+
+  geom_point()+geom_line()
+```
+
+1.  Based on the interaction plot, we observe how the mean self-esteem scores change over time for each treatment group.
+
+    For the Control group, the mean self-esteem scores exhibit only slight variation across the three months. Specifically, there is a small decrease from month 1 (se1) to month 2 (se2), followed by a modest increase at month 3 (se3), suggesting a relatively stable pattern throughout the period.
+
+2.  For the Diet group, the mean decreases more noticeably from se1 to se2 and then increases from se2 to se3, forming a clearer U-shaped pattern compared to the Control group.
+
+3.  For the DietEx group, the change is the most pronounced. There is a sharp drop from se1 to se2, followed by a steep increase from se2 to se3, resulting in the largest variation among all groups.
+
+4.  Comparing these trends, it is evident that the patterns over time differ across treatment groups. The lines in the interaction plot are not parallel, and both the direction and magnitude of change vary across groups.
+
+As a result, The interaction plot clearly demonstrates a significant interaction effect between the treatment regime and time, indicating that the impact of the treatment on self-esteem varies depending on the month of measurement.
+
+Q7：
+
+```{r}
+esteem_long.1<-lmer(Values~regime*Month+(1|subject),data=esteem_long)
+drop1(esteem_long.1,test="Chisq")
+```
+
+The right-hand side of the graph displays a p-value of approximately 0.0036, indicating that the interaction effect is statistically significant. This means the pattern of change over time differs across groups.
+
+In other words, the trajectory of the outcome varies depending on the group, confirming the presence of an interaction.
+
+Moreover, this conclusion aligns with the results from the repeated measures (RM) analysis, which also shows a significant interaction effect. Thus, both the visual evidence and the statistical test support the same conclusion.
+
+## **Rain forest leaf shapes**
+
+Q8:
+
+```{r}
+install.packages("readr")
+library(readr)
+my_url <- "http://datafiles.ritsokiguess.site/leafshape.csv"
+leafshape<-read_csv(my_url)
+```
+
+```{r}
+leafshape
+```
+
+Q9:
+
+```{r}
+install.packages("dplyr")
+library(dplyr)
+
+leafshape %>%
+  select(-location) %>%
+  as.matrix() -> response
+```
+
+```{r}
+leafshape.1<-manova(response~location,data=leafshape)
+summary(leafshape.1)
+```
+
+Q10:
+
+The MANOVA results show that location has a statistically significant effect on the leaf measurements (Pillai’s trace = 0.40199, p \< 2.2 × 10⁻¹⁶). So p value is very small, and thus one or more of the locations has effect on one or more of the quantitative variables.
+
+Q11:
+
+```{r}
+leafshape.2<-lda(location~logwid+logpet+loglen,data=leafshape)
+leafshape.2
+```
+
+Q12:
+
+Because logwid and loglen have negative number (the coefficient for logwid (−1.84) and loglen (−1.00) are negative, while the coefficient for logpet (0.85) is positive), and thus it shows a high score on LD1 is associated with lower values of logwid and loglen, and higher values of logpet.
+
+There are 3 groups, so the maximum number of linear discriminants is 3−1=2. However, only **one** seems important, because LD1 explains 99.44% of the trace while LD2 explains only 0.56%.
+
+Q13:
+
+The proportion of trace shows that LD1 explains 99.44% of the variation, while LD2 explains only 0.56%. Therefore, LD1 is the much more important discrimina than LD2
+
+Q14:
+
+```{r}
+pred<-predict(leafshape.2)
+C<-cbind(leafshape,pred)
+```
+
+```{r}
+C
+```
+
+Q15:
+
+```{r}
+with(C,table(obs=location,pred=class))
+```
+
+Q16:
+
+For Central America, 26 out of 105 observations are misclassified, resulting in an error rate of approximately 24.8%. For Queensland, 31 out of 92 observations are misclassified (29 to Central America and 2 to Tasmania), which corresponds to about 33.7%. These relatively high error rates indicate considerable overlap between these two groups.
+
+For Tasmania, 4 out of 9 observations are misclassified, yielding an error rate of about 44.4%. However, due to the very small sample size for Tasmania, this high error rate is less reliable for assessing overall model performance.
+
+In summary, although the model correctly classifies a reasonable number of observations (79 for Central America, 61 for Queensland, and 5 for Tasmania), the notably high misclassification rates, particularly between Central America and Queensland, this suggest that the groups are **not perfectly distinguishable based on the leaf measurements.**
+
+Q17:
+
+```{r}
+library(ggplot2)
+ggplot(C,aes(x=x.LD1, y=x.LD2, colour=location))+geom_point()
+```
+
+Q18:
+
+Yes, both results convey the same message.
+
+The plot shows that the red points (USA) and green points (Queensland) have substantial overlap, with the two groups heavily mixed along the LTE direction. This indicates poor separation between them based on the LTE projection alone.
+
+This overlap explains the difficulty in distinguishing these groups, which aligns with the earlier classification results where many observations from these groups were misclassified.
+
+Thus, both the visualization and the classification analysis consistently indicate that the model has limited discriminative ability for these groups.
+
+Q19:
+
+The conclusion in Q13—that **LD1 is more important than LD2**—is clearly supported by the plot in Q17.
+
+From the figure, the primary separation between groups occurs along the **LD1 (horizontal) axis**. Notably, Tasmania (blue points) is distinctly separated from the other two groups along LD1, while Central America (red) and Queensland (green) exhibit some spread on this axis.
+
+In contrast, along the **LD2 (vertical) axis**, the groups largely overlap, with points from different locations intermixed. This suggests that LD2 contributes little additional discrimination between the groups.
+
+Therefore, the plot confirms that **LD1 is the main driver of group separation, with LD2 providing minimal extra discriminatory power.**
+
+Q20:
+
+```{r}
+C%>%mutate(id=row_number())%>%
+  filter(id==105)
+```
+
+```{r}
+summary(leafshape)
+```
+
+Observation **105 is correctly classified**, with its actual location and predicted class both being Central America.
+
+To identify this leaf on the plot from Question 17, we examine its discriminant scores. Its LD1 score is approximately −3.439, a strongly negative value. On the graph, LD1 values below about −2.5 appear on the far left side. **In that region, there is only one red point, indicating that row 105 corresponds to the leftmost red point in the figure.**
+
+The posterior probabilities for this observation are approximately:
+
+*0.959 for Central America, 0.040 for Queensland, Close to 0 for Tasmania*
+
+**First, from plot**: These probabilities are reasonable for two main reasons. First, the leaf lies far to the left on the LD1 axis, clearly separated from most other observations. Being distant from the main overlap region allows the model to assign it to one group with high confidence, explaining the high posterior probability for Central America.
+
+**Second, from the orignal variables:** this observation has relatively large original measurements: logwid = 3.025 and loglen = 4.281, both close to the dataset's maximum values (max logwid = 3.832, max loglen = 4.281). Since logwid and loglen have negative coefficients in LD1, large values of these variables push the LD1 score strongly downward, resulting in a very negative LD1 value.
+
+Consequently, this observation is positioned at an extreme location in the LD space, far away from other groups. This strong separation explains why the posterior probability is heavily concentrated in one group.

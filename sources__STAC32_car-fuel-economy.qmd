@@ -1,0 +1,26 @@
+---
+title: "my awesome title"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+mtcars
+```
+
+```{r}
+library(tidyverse)
+mtcars
+```
+
+```{r}
+ggplot(mtcars, aes(x = mpg)) + geom_histogram(bins = 8)
+```
+
+```{r}
+summary(mtcars)
+```

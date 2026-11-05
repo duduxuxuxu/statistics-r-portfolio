@@ -1,0 +1,131 @@
+---
+title: "STAC32 Assignment 8"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+```
+
+## **Rocket science**
+
+question 1
+
+```{r}
+fly_url <- "http://ritsokiguess.site/datafiles/supersonic.csv"
+r <- read_csv(fly_url)
+print(r)
+```
+
+question 2
+
+```{r}
+ggplot(r, aes(y = thrust_eff, x = angle)) +
+geom_point() + geom_smooth()
+```
+
+question 3
+
+curved relationship; go up a little bit and then go downward trend; so, it is not a linear relationship; Straight line relationship not so good here. Possible ways to fit a curve is to add a squared term in explanatory variable.
+
+question 4
+
+```{r}
+qq.1 <- lm(thrust_eff ~ angle + I(angle^2), data = r)
+summary(qq.1)
+```
+
+question 5
+
+```{r}
+ggplot(r, aes(y = thrust_eff, x = angle)) +
+geom_point() + geom_smooth() +
+geom_line(data = qq.1, aes(y = .fitted))
+```
+
+question 6
+
+For the half-divergence angle (angle) of the rocket nozzle.When it around 8 to 18,there has a little wiggles,the curve get up doesn't high enough,The fit curve blew the actual trends,So the fit curve of this part is not so goodfrom 18 to 27,The fit curve is slightly above the actual trends,But this is a deviation better than the first one；Parts greater than 27 is fit very good.Basically,there has no deviation.Overall,there has some deviation.
+
+question 7
+
+```{r}
+qq.2 <- lm(thrust_eff ~ angle + I(angle^2) + I(angle^3), data = r)
+summary(qq.2)
+```
+
+question 8
+
+Two models are fit well,but i think the squared term model is better.Because,R-square get up a little, the value from 0.987 in the first model to 0.995 in the second model,it indicate ;both of overall model are significant;but all coefficients of angle, squared term, and cubed term are all non-significant in the second model.
+
+# **Setting concrete**
+
+question 9
+
+```{r}
+nofly_url <- "http://ritsokiguess.site/datafiles/GLMsData_setting.csv"
+c <- read_csv(nofly_url)
+print(r)
+```
+
+question 10
+
+```{r}
+ll.1 <-lm(Heat ~ A + B + C + D, data = c)
+summary(ll.1)
+```
+
+question 11
+
+The R-squared value is high at 0.983; the overall model is strongly significant; but none of the explanatory term are significant, p value \> 0.05。From the problem,we can see that four variables(A,B,C, and D)are highly about it；Because these variables are highly about that，So repeated addition are not add more to the regression;this will lead it fit good,but it will make every variable look like doesn't apparent.
+
+question 12
+
+```{r}
+tidy(ll.1) %>% arrange(p.value)
+
+```
+
+```{r}
+ll.2 <-update(ll.1, .~. -C)
+tidy(ll.2) %>% arrange(p.value)
+```
+
+```{r}
+ll.3 <-update(ll.2, .~. -D)
+tidy(ll.3) %>% arrange(p.value)
+```
+
+question 13
+
+first variable A:
+
+we know the value is about 1.55.
+
+Keeping B variable (the percentage by weight of tricalcium silicate) constant, an increase of 1 until in the percentage by weight of tricalcium aluminate(A) , the heat given in calories per gram of cement is predicted to increase by about 1.55 until.
+
+question 14
+
+```{r}
+ggplot(ll.3, aes(x = .fitted, y = .resid)) + geom_point()
+```
+
+```{r}
+ggplot(ll.3, aes(sample = .resid)) + stat_qq() + stat_qq_line()
+```
+
+The distribution of residual plot points is not pattern, and evenly distributed on both sides of 0;The normality of residuals in the middle has a little wiggles；but overall，all of it is ok.
+
+question 15
+
+```{r}
+ll.3 %>% augment(c) %>%
+pivot_longer(A:B, names_to = "xname", values_to = "x") %>%
+ggplot(aes(x = x, y = .resid)) + geom_point() +
+facet_wrap(~xname, scales = "free")
+```

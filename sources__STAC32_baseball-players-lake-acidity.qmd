@@ -1,0 +1,108 @@
+---
+title: "STAC32 Assignment 2"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+## Baseball Cards
+
+***Question 1:***
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+url<-"http://ritsokiguess.site/datafiles/Rfit_baseball.csv"
+baseball<-read_csv(url)
+```
+
+```{r}
+baseball
+```
+
+Explanation: Because the link is end with...csv. So we use the read_csv funtion to read the data
+
+***Question 2:***
+
+```{r}
+baseball%>% summarize(mean=mean(weight),sd=sd(weight))
+```
+
+The mean of all players is about 192.2881 and sd of all players is about 18.89631.
+
+***Question 3:***
+
+```{r}
+baseball %>% group_by(field) %>% summarize(mean=mean(weight))
+```
+
+Explanation: The table lists two categories in the field (0= pitcher and 1=fielder) with their corresponding mean weights. I think the pitcher (0 showing in table) is heavier on average, with a mean of 201 pounds. For the fielders (0), he is less heavy; on average, he is about 185 pounds.
+
+***Question 4:***
+
+```{r}
+baseball %>%group_by(field) %>% summarize(med=median(average),iqr=IQR(average))
+```
+
+Explanation:
+
+Pitchers (field=0): mean: 3.56, IQR: 0.645.
+
+Fielders (field = 1): mean: 0.27, IQR: 0.039.
+
+average: earned run average if the player is a pitcher (lower is better) and batting average if the player is a fielder (higher is better).
+
+The median values are different because their median is based on their different performance analyzing metrics, depending on whether the pitcher is earning run average and the fielder is batting average. For ERA if it is good, then so lower the median is, the excellent performance they have, because pitchers are only responsible for pitching and fielders are responsible for pitching and batting. Additionally, the batting average considered good is measured by the decimal places usually. For example, the batting average of 0.2 is batting 2 hundred. And the pitchers may need more strength than fielders. So they have different objects of measurement, so the range of data is different.
+
+***Question 5:***
+
+```{r}
+baseball %>% filter(field==1) %>% group_by(bat) %>% summarize(mean_fields=mean(average),n=n())
+```
+
+Explanation: The relevant variable is **bat**, because we can see the batting style (left-handed, right-handed, or switch-hitting).
+
+## Acidity of lakes
+
+***Question 6:***
+
+```{r}
+my_url<-("http://ritsokiguess.site/datafiles/acidity.csv")
+lakes<-read.csv(my_url)
+```
+
+```{r}
+lakes
+```
+
+***Question 7:***
+
+```{r}
+ggplot(lakes,aes(x=lg_anc))+geom_histogram(bins=10)
+```
+
+***Question 8:***
+
+Even though the distribution is skewed, if the data shows some symmetry and the sample is very large (we have 155 samples, which is larger than 30), a t-test can still be applied reasonably well. By central limit theory, if it is a large sample size, the sampling distribution can be approximately seen as a normal distribution, even if the data distribution is somewhat non-normal. Therefore, the **t-test** is still a valid method here due to its robustness with larger sample sizes.
+
+***Question 9:***
+
+```{r}
+t.test(lakes$lg_anc,conf.level = 0.99)
+```
+
+Explanation: we have 99% confidence interval that the mean of the acidity index (expressed as log(ANC+50)) of lakes in the Northeastern United States is from 4.886599 to 5.323050.
+
+***Question 10:***
+
+```{r}
+t.test(lakes$lg_anc,mu=5.32)
+```
+
+H0 (null hypothesis) = true population mean lg_anc is equal to 5.32. Ha=true population mean lg_anc is not equal to 5.32.
+
+We can see the p-value=0.01107, p-value\<5%, so we can reject the null hypothesis: true population mean lg_anc is equal to 5.32. In conclusion, we have evidence that the mean lg_anc that expresses the acidity index of lakes (Expressed as log(ANC+50) in the Northeastern United States differed from 5.32.

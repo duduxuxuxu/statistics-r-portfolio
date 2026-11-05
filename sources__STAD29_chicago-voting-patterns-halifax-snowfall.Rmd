@@ -1,0 +1,160 @@
+---
+title: "STAD29_A3"
+format:
+  html:
+     df-print: paged
+     embed-resources: true
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(nnet)
+library(marginaleffects)
+```
+
+## **Latin-American voters in Chicago**
+
+1.  (1 point) Read in and display some of the data.
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/chicago-election.csv"
+election<-read_csv(my_url)
+```
+
+```{r}
+election
+```
+
+2.  (2 points) Create a new column called `pct_latin` which is the proportion of Latin-American voters in each precinct. Save the resulting dataframe, and display (only) your new column from it.
+
+```{r}
+election%>%mutate(pct_latin=latv/turnout)->election
+election%>%select(pct_latin)
+```
+
+3.  (2 points) In order to fit a model, we need one column containing all the numbers of votes for all the candidates, and a second column saying which candidate those votes were for. Arrange your dataframe so that this is true, and save the result.
+
+```{r}
+election%>%pivot_longer(Garcia:Yanez,names_to="candidate",values_to="Freq")->election
+election
+```
+
+4.  (3 points) Fit a suitable model, given the aim we are trying to address. Hint: compared to the coal-miners data in lecture, there is one similarity and one difference.
+
+```{r}
+election.1<-multinom(factor(candidate)~pct_latin,weights=Freq,data=election)
+```
+
+5.  (2 points) Demonstrate that there is a significant effect of `pct_latin` on the probabilities of voting for each candidate.
+
+```{r}
+election.2<-multinom(factor(candidate)~1,weights=Freq,data=election)
+```
+
+```{r}
+anova(election.2,election.1)
+```
+
+p-vlaue is 0, so reject the null hypothesis. There is a significant effect of pct_latin on the probabilities of voting for each candidate. Therefore. we do not remove.
+
+6.  (3 points) For values of `pct_latin` of 0.2, 0.4, 0.6, 0.8, obtain predicted probabilities of voting for each candidate, displayed in a way that clearly shows the influence of `pct_latin` on the probabilities.
+
+```{r}
+new <- tibble(pct_latin = c(0.2, 0.4, 0.6, 0.8))
+```
+
+```{r}
+cbind(predictions(model = election.1, newdata = new)) %>%
+  select(group, estimate, pct_latin) %>%
+  mutate(estimate = round(estimate, 3)) %>%
+  pivot_wider(names_from = group, values_from = estimate)
+```
+
+7.  The likelihood of voting for Martinez rises sharply while the likelihood of voting for Garcia falls significantly when the percentage of Latin-American voters in a precinct rises. Garcia is the most likely candidate in precincts with a low percentage of Latin-American voters, but as the percentage increases, support moves to Martinez, who takes the lead in precincts with a high percentage of Latin-American voters. The likelihood of voting for Yanez stays low in all precincts and only slightly rises with the percentage of Latin-American voters.
+
+8.  
+
+    ```{r}
+    plot_predictions(election.1,condition=c("pct_latin","group"))
+    ```
+
+## **Weather in Halifax, Nova Scotia**
+
+9.  (1 point) Read in and display (a little of) the data.
+
+```{r}
+my_url<-"http://datafiles.ritsokiguess.site/halifax-snow.csv"
+halifax_snow<-read_csv(my_url)
+```
+
+```{r}
+halifax_snow
+```
+
+10. (3 points) In your dataframe, what kind of thing is your `date` column? Convert this column into R dates.
+
+the data is text since by the chr at the top of the column
+
+```{r}
+halifax_snow <- halifax_snow %>%
+  separate_wider_position(
+    date,
+    widths = c(
+      "weekday" = 3,
+      "date" = 13),
+    too_few = "align_start"
+  )
+
+```
+
+```{r}
+halifax_snow
+```
+
+```{r}
+halifax_snow%>%mutate(date=mdy(date))->halfix_snow
+halfix_snow
+
+```
+
+11. (3 points) Which four months had the most days with (non-zero) snowfall? Describe your process.
+
+```{r}
+
+halifax_snow <- halifax_snow %>%
+  mutate(date = mdy(date))
+
+top_four_mon <- halifax_snow %>%
+  mutate(mon=month(date)) %>%
+  filter(snowfall > 0) %>%
+  count(mon) %>%
+  arrange(desc(n)) %>%
+  slice_head(n = 4)
+
+top_four_mon
+
+
+```
+
+The four months with the most days of non-zero snowfall are **January, February, March, and December**. To answer this question, I used a sequence of R functions to process the data step by step. First, I used `mutate()` together with `month()` to extract the month from the date variable and create a new month column. Then, I applied `filter()` to keep only the observations where the snowfall amount was greater than zero, since the question focuses on days with non-zero snowfall. After that, I used `count()` to calculate the number of snowy days in each month. I sorted the results in descending order using `arrange(desc())` so that the months with the most snowy days appeared first. Finally, I used `slice_head()` to select the top four months with the highest counts.
+
+12. (3 points) What is the latest date *in a winter* that any snow fell? Describe how you found out.
+
+```{r}
+halifax_snow <- halifax_snow %>%
+  mutate(date = mdy(date))
+
+latest_snowy_date <- halifax_snow %>%
+  filter(snowfall > 0) %>%
+  filter(month(date) <= 6) %>%          
+  slice_max(yday(date), n = 1)          
+
+latest_snowy_date
+
+```
+
+The latest date in a winter on which any snow fell is **May 27, 1974 (Monday)**, and the snowfall amount on that day was **7.6 cm**.
