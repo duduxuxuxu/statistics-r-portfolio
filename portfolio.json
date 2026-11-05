@@ -199,5 +199,53 @@
     "format": "HTML",
     "slug": "patterns-among-exoplanets-species",
     "image": "assets__STAD29-8.png"
+  },
+  {
+    "course": "CSCA08",
+    "number": 1,
+    "title": "Ice Hockey Fantasy Draft",
+    "methods": "String Parsing, Scoring Rules & Budget Constraints",
+    "description": "Build the decision logic for a fantasy hockey draft: interpret compact player statistics, calculate fantasy scores, and determine whether a selection fits roster and budget constraints.",
+    "path": "project__ice-hockey-fantasy-draft.html",
+    "source": "python__ice-hockey-fantasy-draft.py",
+    "format": "HTML",
+    "slug": "ice-hockey-fantasy-draft",
+    "language": "Python"
+  },
+  {
+    "course": "CSCA08",
+    "number": 2,
+    "title": "Messages Hidden in Matrices",
+    "methods": "Nested Lists, Matrix Transformations & Phrase Decoding",
+    "description": "Explore a phrase-encoding system built around binary character matrices. The implementation validates matrix structure, combines and transforms rows, and supports rotation, reflection and phrase reconstruction.",
+    "path": "project__messages-hidden-in-matrices.html",
+    "source": "python__messages-hidden-in-matrices.py",
+    "format": "HTML",
+    "slug": "messages-hidden-in-matrices",
+    "language": "Python"
+  },
+  {
+    "course": "CSCA08",
+    "number": 3,
+    "title": "Social Networks & Suspicious Account Patterns",
+    "methods": "CSV Processing, Dictionaries, Quantiles & Network Heuristics",
+    "description": "Analyze social-media account records and follower relationships. The implementation builds nested account dictionaries, measures mutual connections, and uses activity and network heuristics to flag and rank candidate accounts for further review.",
+    "path": "project__social-networks-suspicious-account-patterns.html",
+    "source": "python__social-networks-suspicious-account-patterns.py",
+    "format": "HTML",
+    "slug": "social-networks-suspicious-account-patterns",
+    "language": "Python"
+  },
+  {
+    "course": "CSCA20",
+    "number": 1,
+    "title": "Personal Finance Ledger",
+    "methods": "Python, SQLite, SQLAlchemy & Financial Reporting",
+    "description": "Develop a menu-driven accounting application that records income and expenses, stores transactions in SQLite, and produces category summaries and time-based reports. The project connects basic database operations with personal financial analysis.",
+    "path": "project__personal-finance-ledger.html",
+    "source": "python__personal-finance-ledger.py",
+    "format": "HTML",
+    "slug": "personal-finance-ledger",
+    "language": "Python"
   }
 ]

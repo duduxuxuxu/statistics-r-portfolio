@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Messages Hidden in Matrices | Qianhui Xu</title><style>body{max-width:1000px;margin:36px auto;padding:0 25px;background:#faf9f5;color:#203b33;font:16px/1.75 Arial,sans-serif}nav{border-bottom:1px solid #d9ded6;padding-bottom:20px}a{color:#285c4c}h1{font:42px/1.2 Georgia,serif;margin:40px 0 15px}h2{font:27px Georgia,serif;margin-top:35px}.methods{font-weight:bold;color:#285c4c}pre{overflow:auto;background:#f0f2ed;border:1px solid #d9ded6;padding:22px;font:13px/1.65 monospace}footer{font-size:13px;color:#65736c;border-top:1px solid #d9ded6;padding:20px 0;margin-top:40px}</style></head><body><nav><a href="index.html">← Qianhui Xu · Portfolio</a></nav><h1>Messages Hidden in Matrices</h1><p class="methods">Nested Lists, Matrix Transformations &amp; Phrase Decoding</p><h2>Project context</h2><p>Explore a phrase-encoding system built around binary character matrices. The implementation validates matrix structure, combines and transforms rows, and supports rotation, reflection and phrase reconstruction.</p><h2>Implementation highlights</h2><ul><li>Validate rectangular matrices and transform binary values.</li><li>Rotate and reflect nested-list representations.</li><li>Compose helper functions into a phrase-decoding workflow.</li></ul><h2>Example run</h2><p>Illustrative inputs evaluated with the saved implementation during portfolio preparation.</p><pre>&gt;&gt;&gt; rotate_matrix([[1, 2], [3, 4]])
+[[3, 1], [4, 2]]
+
+&gt;&gt;&gt; flip_matrix([[1, 2], [3, 4]], True)
+[[3, 4], [1, 2]]</pre><h2>Selected implementation</h2><pre><code>def rotate_matrix(matrix: list[list[Element]]) -&gt; list[list[Element]]:
+    if not is_valid_matrix(matrix):
+        return matrix
+
+    # handle empty matrix
+    if len(matrix) == 0:
+        return matrix
+
+    # create new matrix for 90 degree clockwise rotation
+    rows = len(matrix)
+    cols = len(matrix[0])
+    new_matrix = []
+
+    # fill new matrix by picking elements in reverse row order for each column
+    for c in range(cols):
+        new_row = []
+        for r in range(rows - 1, -1, -1):
+            new_row.append(matrix[r][c])
+        new_matrix.append(new_row)
+
+    return new_matrix
+
+def flip_matrix(
+    matrix: list[list[Element]], horizontal: bool
+) -&gt; list[list[Element]]:
+    if not is_valid_matrix(matrix):
+        return matrix
+
+    # create new matrix for flipping
+    new_matrix = []
+
+    if horizontal:
+        # horizontal flip means flip top to bottom (reverse row order)
+        for i in range(len(matrix) - 1, -1, -1):
+            new_row = []
+            for j in range(len(matrix[i])):
+                new_row.append(matrix[i][j])
+            new_matrix.append(new_row)
+    else:
+        # vertical flip means flip left to right (reverse column order)
+        for row in matrix:
+            new_row = []
+            for j in range(len(row) - 1, -1, -1):
+                new_row.append(row[j])
+            new_matrix.append(new_row)
+
+    return new_matrix</code></pre><p><a download href="python__messages-hidden-in-matrices.py">Download Python implementation ↓</a></p><footer>CSCA08 · University of Toronto, Fall 2025. Developed within an instructor-provided framework. This portfolio includes selected student implementations; course framework files and assignment handouts are not reproduced.</footer></body></html>

@@ -1,4 +1,4 @@
-# Qianhui Xu · Statistical Analysis Portfolio
+# Qianhui Xu · Data Analysis & Programming Portfolio
 
 [Explore the portfolio website](https://duduxuxuxu.github.io/statistics-r-portfolio/)
 
@@ -34,3 +34,16 @@ R analyses connecting real-world questions with data preparation, visualization,
 ## Background
 
 Developed through statistics coursework at the University of Toronto. Original analytical code and saved results are retained; descriptive titles and introductions have been added for this portfolio. Available R Markdown and Quarto source files accompany the reports.
+
+## Python Programming
+
+- [Ice Hockey Fantasy Draft](project__ice-hockey-fantasy-draft.html) — String Parsing, Scoring Rules & Budget Constraints
+- [Messages Hidden in Matrices](project__messages-hidden-in-matrices.html) — Nested Lists, Matrix Transformations & Phrase Decoding
+- [Social Networks & Suspicious Account Patterns](project__social-networks-suspicious-account-patterns.html) — CSV Processing, Dictionaries, Quantiles & Network Heuristics
+- [Personal Finance Ledger](project__personal-finance-ledger.html) — Python, SQLite, SQLAlchemy & Financial Reporting
+
+## Academic background
+
+University of Toronto Scarborough · Specialist (Co-operative), Management and Finance · Minors in Applied Statistics and Economics for Management · Dean’s List, 2024–2026.
+
+Python project pages distinguish student implementation excerpts from course-provided frameworks. The personal finance ledger includes AI-assisted components, documented in its original source comments.

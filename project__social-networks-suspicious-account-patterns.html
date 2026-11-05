@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Social Networks &amp; Suspicious Account Patterns | Qianhui Xu</title><style>body{max-width:1000px;margin:36px auto;padding:0 25px;background:#faf9f5;color:#203b33;font:16px/1.75 Arial,sans-serif}nav{border-bottom:1px solid #d9ded6;padding-bottom:20px}a{color:#285c4c}h1{font:42px/1.2 Georgia,serif;margin:40px 0 15px}h2{font:27px Georgia,serif;margin-top:35px}.methods{font-weight:bold;color:#285c4c}pre{overflow:auto;background:#f0f2ed;border:1px solid #d9ded6;padding:22px;font:13px/1.65 monospace}footer{font-size:13px;color:#65736c;border-top:1px solid #d9ded6;padding:20px 0;margin-top:40px}</style></head><body><nav><a href="index.html">← Qianhui Xu · Portfolio</a></nav><h1>Social Networks &amp; Suspicious Account Patterns</h1><p class="methods">CSV Processing, Dictionaries, Quantiles &amp; Network Heuristics</p><h2>Project context</h2><p>Analyze social-media account records and follower relationships. The implementation builds nested account dictionaries, measures mutual connections, and uses activity and network heuristics to flag and rank candidate accounts for further review.</p><h2>Implementation highlights</h2><ul><li>Convert CSV account fields into structured numeric and text data.</li><li>Measure mutual follower relationships and empirical quantiles.</li><li>Apply transparent account-pattern heuristics and sort candidates.</li></ul><h2>Example run</h2><p>Illustrative inputs evaluated with the saved implementation during portfolio preparation.</p><pre>&gt;&gt;&gt; get_quantile([5, 2, 1, 3, 4], 0.5)
+3
+
+&gt;&gt;&gt; get_quantile([], 0.3)
+-1</pre><h2>Selected implementation</h2><pre><code>def add_num_mutual_connections(users_dict: UserData) -&gt; None:
+    for account in users_dict.values():
+        followers = set(account.get(FOLLOWERS, []))
+        following = set(account.get(FOLLOWING, []))
+        account[NUM_MUTUALS] = len(followers.intersection(following))
+
+def get_quantile(values: list[int], p: float) -&gt; int:
+    if not values or not 0.0 &lt;= p &lt;= 1.0:
+        return -1
+
+    sorted_values = sorted(values)
+    if p == 1.0:
+        return sorted_values[-1]
+
+    if len(sorted_values) == 1:
+        return sorted_values[0]
+
+    index = int(p * (len(sorted_values) - 1))
+    return sorted_values[index]</code></pre><p><a download href="python__social-networks-suspicious-account-patterns.py">Download Python implementation ↓</a></p><footer>CSCA08 · University of Toronto, Fall 2025. Developed within an instructor-provided framework. This portfolio includes selected student implementations; course framework files and assignment handouts are not reproduced.</footer></body></html>

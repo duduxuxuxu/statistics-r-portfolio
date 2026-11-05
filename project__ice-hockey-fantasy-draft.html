@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ice Hockey Fantasy Draft | Qianhui Xu</title><style>body{max-width:1000px;margin:36px auto;padding:0 25px;background:#faf9f5;color:#203b33;font:16px/1.75 Arial,sans-serif}nav{border-bottom:1px solid #d9ded6;padding-bottom:20px}a{color:#285c4c}h1{font:42px/1.2 Georgia,serif;margin:40px 0 15px}h2{font:27px Georgia,serif;margin-top:35px}.methods{font-weight:bold;color:#285c4c}pre{overflow:auto;background:#f0f2ed;border:1px solid #d9ded6;padding:22px;font:13px/1.65 monospace}footer{font-size:13px;color:#65736c;border-top:1px solid #d9ded6;padding:20px 0;margin-top:40px}</style></head><body><nav><a href="index.html">← Qianhui Xu · Portfolio</a></nav><h1>Ice Hockey Fantasy Draft</h1><p class="methods">String Parsing, Scoring Rules &amp; Budget Constraints</p><h2>Project context</h2><p>Build the decision logic for a fantasy hockey draft: interpret compact player statistics, calculate fantasy scores, and determine whether a selection fits roster and budget constraints.</p><h2>Implementation highlights</h2><ul><li>Parse player statistics into goal, assist, hit and goalie contributions.</li><li>Combine eligibility checks with roster and budget constraints.</li><li>Use small reusable functions to support player selection.</li></ul><h2>Example run</h2><p>Illustrative inputs evaluated with the saved implementation during portfolio preparation.</p><pre>&gt;&gt;&gt; get_price(&#x27;NSH_PF_G7-_A14_DC20_H73_Pr10&#x27;)
+10
+
+&gt;&gt;&gt; can_afford(5, &#x27;NSH_PF_G7-_A14_DC20_H73_Pr10&#x27;)
+False
+
+&gt;&gt;&gt; compute_goal_points(&#x27;NSH_PF_G7-_A14_DC20_H73_Pr10&#x27;)
+28</pre><h2>Selected implementation</h2><pre><code>def can_afford(budget: int, player: str) -&gt; bool:
+    player_price = get_price(player)
+    return budget &gt;= player_price
+
+def compute_goal_points(player: str) -&gt; int:
+    if not player or get_position(player) == GOALIE:
+        return 0
+
+    # Find goals section starting with &#x27;_G&#x27;
+    g_index = player.find(&#x27;_G&#x27;)
+
+    # Extract goals value after &#x27;_G&#x27;
+    goals_str = player[g_index + 2:]
+    next_underscore = goals_str.find(&#x27;_&#x27;)
+    if next_underscore == -1:
+        return 0
+
+    goals_value = goals_str[:next_underscore]
+    # Handle negative goals (ending with &#x27;-&#x27;)
+    if goals_value.endswith(&#x27;-&#x27;):
+        goals = int(goals_value[:-1])
+    else:
+        goals = int(goals_value)
+    return goals * POINTS_PER_GOAL</code></pre><p><a download href="python__ice-hockey-fantasy-draft.py">Download Python implementation ↓</a></p><footer>CSCA08 · University of Toronto, Fall 2025. Developed within an instructor-provided framework. This portfolio includes selected student implementations; course framework files and assignment handouts are not reproduced.</footer></body></html>
